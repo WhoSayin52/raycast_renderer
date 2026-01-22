@@ -4,12 +4,13 @@
 #include "draw/draw.hpp"
 #include "logger/logger.hpp"
 
+#include <WinUser.h>
+
 // name of the window class we will register with the OS
 constexpr wchar window_class_name[] = L"raytrace_renderer";
 constexpr wchar window_title[] = L"Raytrace Renderer";
 
 // back buffer vars
-static Win32BackBuffer global_back_buffer{};
 static constexpr int fixed_buffer_width = 640;
 static constexpr int fixed_buffer_height = 360;
 
@@ -18,38 +19,32 @@ static LRESULT win32_procedure(HWND window, UINT message, WPARAM wparam, LPARAM 
 
 static bool win32_init_back_buffer(Win32BackBuffer* buffer, int width, int height);
 
-static void win32_draw(HDC device_conext, Win32BackBuffer* buffer); // TODO: Make it window size independent;
+static void win32_draw(HDC device_conext, Win32BackBuffer* buffer, Viewport viewport); // TODO: Make it window size independent;
 
 // procedure to be called to handle windowsOS messages loop
 static LRESULT win32_procedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+
+	static Win32BackBuffer back_buffer{};
+	static Viewport viewport{};
 
 	LRESULT result = 0;
 
 	switch (message)
 	{
 	case WM_CREATE: {
-		bool success = win32_init_back_buffer(&global_back_buffer, fixed_buffer_width, fixed_buffer_height);
+		bool success = win32_init_back_buffer(&back_buffer, fixed_buffer_width, fixed_buffer_height);
 		if (success == false) {
 			LOG_ERROR("failed to init_back_buffer");
 			result = -1;
 		}
 
+		// TODO remove
 		for (int y = 100; y < 200; ++y) {
 			for (int x = 100; x < 300; ++x) {
-				set_pixel(&global_back_buffer, x, y, Vector4{ 0, 255, 0, 255 });
+				set_pixel(&back_buffer, x, y, Vector4{ 0, 255, 0, 255 });
 			}
 		}
 
-	}break;
-
-	case WM_CLOSE: {
-		if (MessageBox(window, L"Are you sure you want to quit?", window_title, MB_OKCANCEL) == IDOK) {
-			DestroyWindow(window);
-		}
-	}break;
-
-	case WM_DESTROY: {
-		PostQuitMessage(0);
 	}break;
 
 	case WM_PAINT: {
@@ -67,9 +62,27 @@ static LRESULT win32_procedure(HWND window, UINT message, WPARAM wparam, LPARAM 
 			BLACKNESS
 		);
 
-		win32_draw(device_context, &global_back_buffer);
+		win32_draw(device_context, &back_buffer, viewport);
 
 		EndPaint(window, &ps);
+	}break;
+
+	case WM_SIZE: {
+		uint width = LOWORD(lparam);
+		uint height = HIWORD(lparam);
+
+		viewport.width = (int)width;
+		viewport.height = (int)height;
+	}break;
+
+	case WM_CLOSE: {
+		if (MessageBox(window, L"Are you sure you want to quit?", window_title, MB_OKCANCEL) == IDOK) {
+			DestroyWindow(window);
+		}
+	}break;
+
+	case WM_DESTROY: {
+		PostQuitMessage(0);
 	}break;
 
 	default: {
@@ -103,11 +116,11 @@ static bool win32_init_back_buffer(Win32BackBuffer* buffer, int width, int heigh
 	return buffer->memory != nullptr;
 }
 
-static void win32_draw(HDC device_conext, Win32BackBuffer* buffer) {
-	// TODO: Make it window size independent;
+static void win32_draw(HDC device_conext, Win32BackBuffer* buffer, Viewport viewport) {
+
 	StretchDIBits(
 		device_conext,
-		0, 0, fixed_buffer_width, fixed_buffer_height,
+		0, 0, viewport.width, viewport.height,
 		0, 0, fixed_buffer_width, fixed_buffer_height,
 		buffer->memory, &buffer->info, DIB_RGB_COLORS, SRCCOPY
 	);
