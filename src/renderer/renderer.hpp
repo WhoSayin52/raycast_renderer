@@ -12,6 +12,6 @@ struct BackBuffer {
 
 constexpr int bytes_per_pixel = 4;
 
-void render(BackBuffer buffer);
+void render(BackBuffer* buffer);
 
 #endif // RENDERER_HPP

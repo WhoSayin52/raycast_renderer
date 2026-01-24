@@ -4,6 +4,8 @@
 #include "renderer/renderer.hpp"
 #include "logger/logger.hpp"
 
+// TODO: try to remove from global space
+
 // static global constants
 static constexpr wchar window_class_name[] = L"raytrace_renderer";
 static constexpr wchar window_title[] = L"Raytrace Renderer";
@@ -49,7 +51,7 @@ int WINAPI wWinMain(
 		window_class_name,
 		window_title,
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, fixed_back_buffer_width, fixed_back_buffer_height,
+		CW_USEDEFAULT, CW_USEDEFAULT, fixed_back_buffer_width, fixed_back_buffer_height, // TODO: make CW_USEDEFAULT
 		nullptr, nullptr,
 		process,
 		nullptr
@@ -86,6 +88,8 @@ int WINAPI wWinMain(
 		buffer.width = global_buffer.width;
 		buffer.height = global_buffer.height;
 		buffer.pitch = global_buffer.pitch;
+
+		render(&buffer);
 	}
 
 	DWORD rc = GetLastError();

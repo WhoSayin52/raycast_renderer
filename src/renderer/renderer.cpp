@@ -1,7 +1,5 @@
 #include "renderer.hpp"
 
-
-
 struct Rect {
 	int x;
 	int y;
@@ -9,9 +7,7 @@ struct Rect {
 	int height;
 };
 
-
-
-void render(BackBuffer buffer) {
+void render(BackBuffer* buffer) {
 	(void)buffer;
 }
 
