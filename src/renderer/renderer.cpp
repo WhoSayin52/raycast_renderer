@@ -70,7 +70,7 @@ static Vector3 ray_cast(Vector3f origin, Vector3f direction, f32 t_min, f32 t_ma
 static Collision* ray_intersection(Vector3f origin, Vector3f direction, f32 t_min, f32 t_max) {
 	Collision* result = nullptr;
 
-	f64 closest_t = t_max;
+	f32 closest_t = t_max;
 	Sphere* sphere;
 	for (s64 i = 0; i < ARRAY_COUNT(spheres); ++i) {
 		sphere = &spheres[i];
@@ -115,10 +115,6 @@ static Vector3 compute_color(Collision* collision, Vector3f direction) {
 	if (collision == nullptr) {
 		return background_color;
 	}
-
-	Vector3 sphere_color = collision->sphere->color;
-
-	f32 diffuse = dot(collision->normal, -direction);
 }
 
 static Vector2 screen_to_canvas(int x, int y, Vector2 origin) {
