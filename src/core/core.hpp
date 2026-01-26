@@ -34,8 +34,6 @@ struct Vector2 {
 		int data[2];
 	};
 };
-Vector2 operator+(Vector2 v1, Vector2 v2);
-Vector2 operator-(Vector2 v1, Vector2 v2);
 
 struct Vector2f {
 	union {
@@ -45,8 +43,17 @@ struct Vector2f {
 		f32 data[2];
 	};
 };
+
+constexpr Vector2 operator+(Vector2 v);
+constexpr Vector2f operator+(Vector2f v);
+constexpr Vector2 operator-(Vector2 v);
+constexpr Vector2f operator-(Vector2f v);
+Vector2 operator+(Vector2 v1, Vector2 v2);
 Vector2f operator+(Vector2f v1, Vector2f v2);
+Vector2 operator-(Vector2 v1, Vector2 v2);
 Vector2f operator-(Vector2f v1, Vector2f v2);
+Vector2 operator*(Vector2 v, int scaler);
+Vector2f operator*(Vector2f v, f32 scaler);
 
 // vector3
 struct Vector3 {
@@ -57,8 +64,6 @@ struct Vector3 {
 		int data[3];
 	};
 };
-Vector3 operator+(Vector3 v1, Vector3 v2);
-Vector3 operator-(Vector3 v1, Vector3 v2);
 
 struct Vector3f {
 	union {
@@ -68,8 +73,17 @@ struct Vector3f {
 		f32 data[3];
 	};
 };
+
+constexpr Vector3 operator+(Vector3 v);
+constexpr Vector3f operator+(Vector3f v);
+constexpr Vector3 operator-(Vector3 v);
+constexpr Vector3f operator-(Vector3f v);
+Vector3 operator+(Vector3 v1, Vector3 v2);
 Vector3f operator+(Vector3f v1, Vector3f v2);
+Vector3 operator-(Vector3 v1, Vector3 v2);
 Vector3f operator-(Vector3f v1, Vector3f v2);
+Vector3 operator*(Vector3 v, int scaler);
+Vector3f operator*(Vector3f v, f32 scaler);
 
 struct Vector4 {
 	union {
@@ -83,6 +97,11 @@ struct Vector4 {
 // vector functions
 int dot(Vector3 v1, Vector3 v2);
 f32 dot(Vector3f v1, Vector3f v2);
+
+Vector2 normalize(Vector2  v);
+Vector2f normalize(Vector2f v);
+Vector3 normalize(Vector3  v);
+Vector3f normalize(Vector3f v);
 
 // math constants
 constexpr f64 pi = 3.141592653589793;

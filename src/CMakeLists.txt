@@ -4,6 +4,6 @@ target_sources(
 
 	core/core.hpp core/core.cpp
 	logger/logger.hpp logger/logger.cpp
-	renderer/renderer.hpp renderer/renderer.cpp
+	renderer/renderer.hpp renderer/renderer.cpp renderer/scene.hpp
 	utility/utility.hpp
 )
