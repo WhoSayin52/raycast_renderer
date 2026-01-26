@@ -3,10 +3,16 @@
 #include "../utility/utility.hpp"
 
 #include <cmath>
+#include <climits>
+#include <cfloat>
 
 // structs
 struct Camera {
 	Vector3f position;
+	f32 near;			 // distance between camera and viewport. Anything in less gets clipped
+	f32 far;				 // distance between camera and furthest object. Anything beyond get clipped
+	f32 field_of_view; // in radians
+	f32 aspect_ratio;  // viewport/canvas width divided by viewport/canvas height 
 };
 
 struct Sphere {
@@ -16,30 +22,47 @@ struct Sphere {
 };
 
 // static global constants
-constexpr Vector3 background_color = { 255, 255, 255 };
+static constexpr Vector3 background_color = { 255, 255, 255 };
 
 // static global vars
-static Camera camera{ .position = Vector3f{0, 0, 0} };
+static Camera camera{
+	.position = Vector3f{0.0f, 0.0f, 0.0f},	// x, y, z
+	.near = 1.0f,
+	.far = FLT_MAX,
+	.field_of_view = (f32)(45.0 * pi / 180.0),
+	.aspect_ratio = 16.0f / 9.0f
+};
 static Sphere scene[1] = {
 	Sphere{
-		.position = Vector3f{0.0f, 0.0f, 110.0f},
+		.position = Vector3f{0.0f, 0.0f, 100.0f},
 		.color = Vector3{0, 255, 0},
-		.r = 100.0f
+		.r = 1.0f
 	},
 };
 
 // functions
 static Vector3 trace_ray(Vector3f origin, Vector3f direction, int t_min, int t_max);
-static Vector3f canvas_to_viewport(int x, int y, Canvas canvas);
-static void set_pixel(BackBuffer* buffer, int x, int y, Vector3 rgb);
+static Vector2 screen_to_canvas(int x, int y, Vector2 origin);
+static Vector3f canvas_to_viewport(int x, int y, Vector2f ratio);
+static void set_pixel(Canvas* canvas, int x, int y, Vector3 rgb);
 
-void render(BackBuffer* buffer, Canvas canvas) {
+void render(Canvas* canvas) {
 
-	for (int y = 0; y < canvas.height; ++y) {
-		for (int x = 0; x < canvas.width; ++x) {
-			Vector3f ray_direction = canvas_to_viewport(x, y, canvas);
+	Vector2f viewport;
+	viewport.w = 2.0f * tan(camera.field_of_view / 2.0f);
+	viewport.h = viewport.w / camera.aspect_ratio;
+
+	Vector2f viewport_canvas_ratio{
+		.w = viewport.w / canvas->width,
+		.h = viewport.h / canvas->height
+	};
+
+	for (int y = 0; y < canvas->height; ++y) {
+		for (int x = 0; x < canvas->width; ++x) {
+			Vector2 canvas_position = screen_to_canvas(x, y, canvas->origin);
+			Vector3f ray_direction = canvas_to_viewport(canvas_position.x, canvas_position.y, viewport_canvas_ratio);
 			Vector3 color = trace_ray(camera.position, ray_direction, 1, INT_MAX);
-			set_pixel(buffer, x, y, color);
+			set_pixel(canvas, x, y, color);
 		}
 	}
 }
@@ -56,7 +79,7 @@ static Vector3 trace_ray(Vector3f origin, Vector3f direction, int t_min, int t_m
 		// calculating the roots for the quadratic equation representing the intersection between 
 		// the parametric line: point = camera_position + ray_direction * t and the sphere: point = center + radius
 		Vector3f co = origin - sphere.position;
-		int r = sphere.r;
+		f32 r = sphere.r;
 
 		f32 a = dot(direction, direction);
 		f32 b = dot(co, direction) * 2;
@@ -83,24 +106,31 @@ static Vector3 trace_ray(Vector3f origin, Vector3f direction, int t_min, int t_m
 
 	return result;
 }
+
+static Vector2 screen_to_canvas(int x, int y, Vector2 origin) {
+	return Vector2{
+		x - origin.x,
+		y - origin.y
+	};
+}
 // TODO: viewport is in world units;
-static Vector3f canvas_to_viewport(int x, int y, Canvas canvas) {
+static Vector3f canvas_to_viewport(int x, int y, Vector2f ratio) {
 	return Vector3f{
-		(f32)(x - canvas.origin.x),
-		(f32)(y - canvas.origin.y),
-		1.0f // 1 is the distance between the camera and viewport
+		x * ratio.w,
+		y * ratio.h,
+		camera.near  // distance between the camera and viewport
 	};
 }
 
-static void set_pixel(BackBuffer* buffer, int x, int y, Vector3 rgb) {
+static void set_pixel(Canvas* canvas, int x, int y, Vector3 rgb) {
 	ASSERT(
-		(buffer->width > x) &&
-		(buffer->height > y) &&
+		(canvas->width > x) &&
+		(canvas->height > y) &&
 		(x >= 0) &&
 		(y >= 0)
 	);
 
-	u32* pixel = (u32*)((byte*)buffer->memory + (y * buffer->pitch) + (x * bytes_per_pixel));
+	u32* pixel = (u32*)((byte*)canvas->memory + (y * canvas->pitch) + (x * bytes_per_pixel));
 
 	*pixel = (rgb.b << 16) | (rgb.g << 8) | rgb.r;
 }

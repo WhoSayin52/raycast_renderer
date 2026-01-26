@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <climits>
 
 // types
 using s32 = int32_t;
@@ -40,9 +39,9 @@ Vector2 operator-(Vector2 v1, Vector2 v2);
 
 struct Vector2f {
 	union {
-		struct { int x, y; };
-		struct { int w, h; };
-		struct { int min, max; };
+		struct { f32 x, y; };
+		struct { f32 w, h; };
+		struct { f32 min, max; };
 		int data[2];
 	};
 };
@@ -53,6 +52,7 @@ Vector2f operator-(Vector2f v1, Vector2f v2);
 struct Vector3 {
 	union {
 		struct { int x, y, z; };
+		struct { int w, h, l; };
 		struct { int r, g, b; };
 		int data[3];
 	};
@@ -63,6 +63,7 @@ Vector3 operator-(Vector3 v1, Vector3 v2);
 struct Vector3f {
 	union {
 		struct { f32 x, y, z; };
+		struct { f32 w, h, l; };
 		struct { f32 r, g, b; };
 		int data[3];
 	};
@@ -77,14 +78,14 @@ struct Vector4 {
 		int data[4];
 	};
 };
-
-
+#pragma warning(pop)
 
 // vector functions
 int dot(Vector3 v1, Vector3 v2);
 f32 dot(Vector3f v1, Vector3f v2);
 
-#pragma warning(pop)
+// math constants
+constexpr f64 pi = 3.141592653589793;
 
 // memory
 constexpr u64 kilobytes(u64 bytes) { return bytes * 1024LL; }

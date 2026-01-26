@@ -7,21 +7,16 @@ struct Rect {
 	int x, y, width, height;
 };
 
-struct BackBuffer {
+struct Canvas {
 	void* memory;
 	int width;
 	int height;
 	int pitch;
-};
-
-struct Canvas {
-	int width;
-	int height;
 	Vector2 origin;
 };
 
 constexpr int bytes_per_pixel = 4;
 
-void render(BackBuffer* buffer, Canvas canvas);
+void render(Canvas* canvas);
 
 #endif // RENDERER_HPP
