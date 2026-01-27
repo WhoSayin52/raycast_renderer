@@ -176,7 +176,16 @@ static Vector3f compute_point_light(Vector3f view_direction) {
 	for (int i = 0; i < ARRAY_COUNT(point_lights); ++i) {
 		PointLight* light = &point_lights[i];
 
-		Vector3f light_direction = normalize(collision.position - light->position);
+		Vector3f light_direction = collision.position - light->position;
+		f32 distance_from_light = length(light_direction);
+		light_direction = normalize(light_direction);
+
+		// attenuation
+		f32 attenuation = 1.0f / (
+			light->quadratic * distance_from_light +
+			light->linear * distance_from_light +
+			light->constant
+			);
 
 		// ambient 
 		Vector3f ambient = material->diffuse * light->light.ambient;
@@ -191,7 +200,7 @@ static Vector3f compute_point_light(Vector3f view_direction) {
 		f32 specular_strength = material->shininess ? pow(maximum(dot(view_direction, reflection), 0.0f), material->shininess) : 0;
 		Vector3f specular = material->specular * light->light.specular * specular_strength;
 
-		result += ambient + diffuse + specular;
+		result += (ambient + diffuse + specular) * attenuation;
 	}
 	return result;
 }

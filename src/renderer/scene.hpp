@@ -71,7 +71,7 @@ inline Sphere spheres[] = {
 		.material = Material{
 			.diffuse = {1.0f, 0.0f, 0.0f},
 			.specular = {1.0f, 0.0f, 0.0f},
-			.shininess = 500.0f
+			.shininess = 100.0f
 		} // red
 	},
 	Sphere{
@@ -80,7 +80,7 @@ inline Sphere spheres[] = {
 		.material = Material{
 			.diffuse = {0.0f, 0.0f, 1.0f},
 			.specular = {0.0f, 0.0f, 1.0f},
-			.shininess = 500.0f
+			.shininess = 100.0f
 		} // blue
 	},
 	Sphere{
@@ -98,7 +98,7 @@ inline Sphere spheres[] = {
 		.material = Material{
 			.diffuse = {1.0f, 1.0f, 0.0f},
 			.specular = {1.0f, 1.0f, 0.0f},
-			.shininess = 1000.0f
+			.shininess = 500.0f
 		} // yellow
 	},
 };
