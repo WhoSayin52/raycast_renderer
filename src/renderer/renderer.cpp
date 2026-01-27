@@ -47,7 +47,7 @@ static Vector3f ray_cast(Vector3f origin, Vector3f direction, f32 t_min, f32 t_m
 static void ray_intersection(Vector3f origin, Vector3f direction, f32 t_min, f32 t_max);
 static Vector3f compute_color(Vector3f ray_direction);
 static Vector3f compute_directional_light(Vector3f view_direction);
-//static Vector3f compute_point_light();
+static Vector3f compute_point_light(Vector3f view_direction);
 static Vector2 screen_to_canvas(int x, int y, Vector2 origin);
 static Vector3f canvas_to_viewport(int x, int y, Vector2f ratio);
 static Vector3 to_rgb(Vector3f color);
@@ -135,7 +135,9 @@ static Vector3f compute_color(Vector3f ray_direction) {
 		return background_color;
 	}
 
-	Vector3f result = compute_directional_light(-ray_direction);
+	Vector3f view_direction = -ray_direction;
+	Vector3f result = compute_directional_light(view_direction);
+	result += compute_point_light(view_direction);
 
 	return result;
 }
@@ -159,11 +161,38 @@ static Vector3f compute_directional_light(Vector3f view_direction) {
 		// specular TODO implement
 		Vector3f reflection = reflect(light->direction, normal);
 		f32 specular_strength = material->shininess ? pow(maximum(dot(view_direction, reflection), 0.0f), material->shininess) : 0;
-		Vector3f specular = material->specular * specular_strength;
+		Vector3f specular = material->specular * light->light.specular * specular_strength;
 
 		result += ambient + diffuse + specular;
 	}
+	return result;
+}
 
+static Vector3f compute_point_light(Vector3f view_direction) {
+	Vector3f result{};
+
+	Vector3f normal = collision.normal;
+	Material* material = &collision.sphere->material;
+	for (int i = 0; i < ARRAY_COUNT(point_lights); ++i) {
+		PointLight* light = &point_lights[i];
+
+		Vector3f light_direction = normalize(collision.position - light->position);
+
+		// ambient 
+		Vector3f ambient = material->diffuse * light->light.ambient;
+
+		// diffuse
+		// make sure light direction is already normalized
+		f32 diffuse_strength = maximum(dot(normal, -light_direction), 0.0f);
+		Vector3f diffuse = material->diffuse * light->light.diffuse * diffuse_strength;
+
+		// specular
+		Vector3f reflection = reflect(light_direction, normal);
+		f32 specular_strength = material->shininess ? pow(maximum(dot(view_direction, reflection), 0.0f), material->shininess) : 0;
+		Vector3f specular = material->specular * light->light.specular * specular_strength;
+
+		result += ambient + diffuse + specular;
+	}
 	return result;
 }
 

@@ -10,26 +10,17 @@ struct LightComponent {
 	Vector3f specular;
 };
 
-struct PointLight {
-	Vector3f position;
-	LightComponent light;
-};
-
 struct DirectionalLight {
 	Vector3f direction;
 	LightComponent light;
 };
 
-
-PointLight point_lights[] = {
-	PointLight{
-		.position = Vector3f{2.0f, 1.0f, 0.0f},
-		.light = LightComponent{
-			.ambient = {0.2f, 0.2f, 0.2f},
-			.diffuse = {0.5f, 0.5f, 0.5f},
-			.specular = {0.5f, 0.5f, 0.5f}
-		}
-	},
+struct PointLight {
+	Vector3f position;
+	LightComponent light;
+	f32 constant; // always one
+	f32 linear;
+	f32 quadratic;
 };
 
 DirectionalLight direct_lights[] = {
@@ -37,9 +28,23 @@ DirectionalLight direct_lights[] = {
 		.direction = normalize(Vector3f{1.0f, -4.0f, 4.0f}),
 		.light = LightComponent{
 			.ambient = {0.2f, 0.2f, 0.2f},
-			.diffuse = {0.5f, 0.5f, 0.5f},
-			.specular = {0.5f, 0.5f, 0.5f}
+			.diffuse = {0.6f, 0.6f, 0.6f},
+			.specular = {0.2f, 0.2f, 0.2f}
 		}
+	},
+};
+
+PointLight point_lights[] = {
+	PointLight{
+		.position = Vector3f{2.0f, 1.0f, 0.0f},
+		.light = LightComponent{
+			.ambient = {0.2f, 0.2f, 0.2f},
+			.diffuse = {0.6f, 0.6f, 0.6f},
+			.specular = {0.2f, 0.2f, 0.2f}
+		},
+		.constant = 1.0f,
+		.linear = 0.7f,
+		.quadratic = 1.8f
 	},
 };
 

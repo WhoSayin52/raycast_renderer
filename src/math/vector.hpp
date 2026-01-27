@@ -115,11 +115,14 @@ constexpr f32 dot(Vector3f v1, Vector3f v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
+f32 length(Vector2f v);
+f32 length(Vector3f v);
+
 Vector2f normalize(Vector2f v);
 Vector3f normalize(Vector3f v);
 
 constexpr Vector3f reflect(Vector3f vector, Vector3f normal) {
-	return vector - (normal * (2 * dot(vector, normal)));
+	return vector - (normal * (2.0f * dot(vector, normal)));
 }
 
 #endif // VECTOR_HPP
