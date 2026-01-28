@@ -24,7 +24,8 @@ struct Camera {
 };
 
 // static global constants
-static constexpr Vector3f background_color = { 1.0f, 1.0f, 1.0f };
+static constexpr Vector3f background_color = { 0.043f, 0.063f, 0.149f };
+static constexpr f32 ESP = 0.001f;
 
 // static global vars
 static Collision light_collision{ // TODO: replace with arena allocator and local var
@@ -47,7 +48,7 @@ static Camera camera{
 
 // functions
 static bool ray_cast(Collision* collision, Vector3f origin, Vector3f direction, f32 t_min, f32 t_max);
-static Vector3f compute_color(Collision* collision, Vector3f ray_direction);
+static Vector3f compute_color(Collision* collision, Vector3f ray_direction, int recursion_depth);
 static Vector3f compute_directional_light(Collision* collision, Vector3f view_direction);
 static Vector3f compute_point_light(Collision* collision, Vector3f view_direction);
 static Vector2 screen_to_canvas(int x, int y, Vector2 origin);
@@ -70,7 +71,7 @@ void render(Canvas* canvas) {
 			Vector3f ray_direction = canvas_to_viewport(canvas_position.x, canvas_position.y, viewport_canvas_ratio);
 			ray_direction = normalize(ray_direction);
 			bool is_collision = ray_cast(&light_collision, camera.position, ray_direction, camera.near, camera.far);
-			Vector3f color = is_collision ? compute_color(&light_collision, ray_direction) : background_color;
+			Vector3f color = is_collision ? compute_color(&light_collision, ray_direction, 3) : background_color;
 			Vector3 rgb = to_rgb(color);
 			set_pixel(canvas, x, y, rgb);
 		}
@@ -126,11 +127,28 @@ static bool ray_cast(Collision* collision, Vector3f origin, Vector3f direction, 
 	}
 }
 
-static Vector3f compute_color(Collision* collision, Vector3f ray_direction) {
+static Vector3f compute_color(Collision* collision, Vector3f ray_direction, int recursion_depth) {
 	// using phong lighting model;
+	Vector3f result{};
+
 	Vector3f view_direction = -ray_direction;
-	Vector3f result = compute_directional_light(collision, view_direction);
+	result = compute_directional_light(collision, view_direction);
 	result += compute_point_light(collision, view_direction);
+
+	f32 r = collision->sphere->material.reflectiveness;
+	if (recursion_depth > 0 && r > 0) {
+		bool has_collision = ray_cast(
+			collision, collision->position,
+			reflect(ray_direction, collision->normal),
+			0.01f, camera.far
+		);
+		if (has_collision == false) {
+			return result * (1 - r) + background_color * r;
+		}
+		else {
+			return result * (1 - r) + compute_color(collision, reflect(ray_direction, collision->normal), recursion_depth - 1) * r;
+		}
+	}
 
 	return result;
 }
@@ -144,7 +162,11 @@ static Vector3f compute_directional_light(Collision* collision, Vector3f view_di
 		DirectionalLight* light = &direct_lights[i];
 
 		// shadow checking
-		bool has_collision = ray_cast(&shadow_collision, collision->position, -light->direction, 0.01f, FLT_MAX);
+		bool has_collision = ray_cast(
+			&shadow_collision,
+			collision->position + normal * ESP,
+			-light->direction,
+			ESP, camera.far);
 		if (has_collision) {
 			continue;
 		}
@@ -177,7 +199,12 @@ static Vector3f compute_point_light(Collision* collision, Vector3f view_directio
 
 		Vector3f light_direction = collision->position - light->position;
 		// shadow checking
-		bool has_collision = ray_cast(&shadow_collision, collision->position, -light_direction, 0.01f, 1.0f);
+		bool has_collision = ray_cast(
+			&shadow_collision,
+			collision->position + normal * ESP,
+			-light_direction,
+			ESP, 1.0f
+		);
 		if (has_collision) {
 			continue;
 		}

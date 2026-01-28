@@ -42,7 +42,7 @@ int WINAPI wWinMain(
 
 	// vars required for main loop
 	Win32BackBuffer win32_back_buffer{};
-	bool success = win32_init_back_buffer(&win32_back_buffer, 1280, 720);
+	bool success = win32_init_back_buffer(&win32_back_buffer, 1280, 720); // screen size(client rect)
 	if (success == false) {
 		LOG_ERROR("failed to init_back_buffer");
 		return 1;

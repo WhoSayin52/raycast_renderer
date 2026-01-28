@@ -25,7 +25,7 @@ struct PointLight {
 
 DirectionalLight direct_lights[] = {
 	DirectionalLight{
-		.direction = normalize(Vector3f{-1.0f, -1.0f, 4.0f}),
+		.direction = normalize(Vector3f{-1.0f, -2.0f, 4.0f}),
 		.light = LightComponent{
 			.ambient = {0.2f, 0.2f, 0.2f},
 			.diffuse = {0.4f, 0.4f, 0.4f},
@@ -70,21 +70,21 @@ inline Sphere spheres[] = {
 		.position = Vector3f{0.0f, -1.0f, 3.0f},
 		.r = 1.0f,
 		.material = Material{
-			.diffuse = {1.0f, 0.0f, 0.0f},
-			.specular = {1.0f, 0.0f, 0.0f},
+			.diffuse = {0.0f, 0.0f, 1.0f},
+			.specular = {0.0f, 0.0f, 1.0f},
 			.shininess = 500.0f,
 			.reflectiveness = 0.2f
-		} // red
+		} // blue
 	},
 	Sphere{
 		.position = Vector3f{2.0f, 0.0f, 4.0f},
 		.r = 1.0f,
 		.material = Material{
-			.diffuse = {0.0f, 0.0f, 1.0f},
-			.specular = {0.0f, 0.0f, 1.0f},
+			.diffuse = {1.0f, 0.0f, 0.0f},
+			.specular = {1.0f, 0.0f, 0.0f},
 			.shininess = 50.0f,
 			.reflectiveness = 0.3f
-		} // blue
+		} // red
 	},
 	Sphere{
 		.position = Vector3f{-2.0f, 0.0f, 4.0f},
@@ -97,12 +97,12 @@ inline Sphere spheres[] = {
 		} // green
 	},
 	Sphere{
-		.position = Vector3f{0.0f, -5001.0f, 0.0f},
-		.r = 5000.0f,
+		.position = Vector3f{0.0f, -1001.0f, 0.0f},
+		.r = 1000.0f,
 		.material = Material{
-			.diffuse = {1.0f, 1.0f, 0.0f},
-			.specular = {1.0f, 1.0f, 0.0f},
-			.shininess = 1000.0f,
+			.diffuse = {1.0f, 1.0f, 1.0f},
+			.specular = {1.0f, 1.0f, 1.0f},
+			.shininess = 500.0f,
 			.reflectiveness = 0.5f
 		} // yellow
 	},
