@@ -107,12 +107,18 @@ constexpr Vector3f operator*(Vector3f v1, Vector3f v2) { return { (v1.x * v2.x),
 constexpr Vector3 operator*(Vector3 v, int scaler) { return { (v.x * scaler), (v.y * scaler), (v.z * scaler) }; }
 constexpr Vector3f operator*(Vector3f v, f32 scaler) { return { (v.x * scaler), (v.y * scaler), (v.z * scaler) }; }
 
-// vector3 functions
+// vector functions
 constexpr int dot(Vector3 v1, Vector3 v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 constexpr f32 dot(Vector3f v1, Vector3f v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+constexpr Vector3 cross(Vector3 v1, Vector3 v2) {
+	return { (v1.y * v2.z - v1.z * v2.y), (v1.z * v2.x - v1.x * v2.z), (v1.x * v2.y - v1.y * v2.x) };
+}
+constexpr Vector3f cross(Vector3f v1, Vector3f v2) {
+	return { (v1.y * v2.z - v1.z * v2.y), (v1.z * v2.x - v1.x * v2.z), (v1.x * v2.y - v1.y * v2.x) };
 }
 
 f32 length(Vector2f v);
