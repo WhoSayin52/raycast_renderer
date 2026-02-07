@@ -13,6 +13,11 @@
 A real-time 3D ray-trace renderer built from scratch using only the Win32 API.  
 The renderer implements the Phong lighting model and supports shadows and reflections, with all rendering performed on the CPU.
 
+### Tools
+
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+
 ## Learning Objectives
 1. First steps into real-time graphics programming, including lighting models (Phong lighting), shadows, reflections, ray casting, and basic collision detection.
 2. A hands-on introduction to the Win32 API and the Windows message loop, including `VirtualAlloc`, `WindowProc`, `DefWindowProc`, and `PostMessage`.
@@ -80,6 +85,7 @@ The next steps are to:
 - Progress to DirectX 12
 
 <img width="1602" height="940" alt="conclusion" src="https://github.com/user-attachments/assets/449d5593-c30b-4308-8dec-dd6d1d695bd7" />
+
 
 
 
