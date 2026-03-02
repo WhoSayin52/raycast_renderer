@@ -74,12 +74,8 @@ explorer .
 ## Conclusion
 While there is still plenty of room for improvement, such as supporting objects beyond spheres or adding multi-threading, this project successfully achieved its goal of being a gentle introduction into graphics programming and ray-tracing.
 
-The next steps are to:
-- Implement a rasterizer
-- Learn DirectX 11
-- Progress to DirectX 12
-
 <img width="1602" height="940" alt="conclusion" src="https://github.com/user-attachments/assets/449d5593-c30b-4308-8dec-dd6d1d695bd7" />
+
 
 
 
