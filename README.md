@@ -1,4 +1,4 @@
-# Ray-Trace Renderer
+# Real-Time Raytracer
 
 <img width="1602" height="940" alt="main" src="https://github.com/user-attachments/assets/dae268a8-0bc1-4bc5-940b-2f3ad2093a0c" />
 
@@ -10,7 +10,7 @@
 - [Conclusion](#conclusion)
 
 ## Description
-A real-time 3D ray-trace renderer built from scratch using only the Win32 API.  
+A real-time 3D software ray-trace renderer built from scratch using only the Win32 API.  
 The renderer implements the Phong lighting model and supports shadows and reflections, with all rendering performed on the CPU.
 
 ### Tools
@@ -38,7 +38,7 @@ The renderer implements the Phong lighting model and supports shadows and reflec
 <img width="1602" height="940" alt="extra" src="https://github.com/user-attachments/assets/7590973c-ba9f-49e9-9e84-d2bbadfe9939" />
 
 ## Installation
-### Pre-Compiled Windowsx64 amd64
+### Pre-Compiled Windows amd64
 
 [v0.1.0 Release](https://github.com/WhoSayin52/raytrace_renderer/releases/tag/v0.1.0/raytrace_renderer.exe )
 
@@ -48,11 +48,9 @@ The renderer implements the Phong lighting model and supports shadows and reflec
 #### Prerequiste
 Before building the project, make sure you have the following installed:
 
-- **CMake** (version 3.20 or higher recommended)
+- **CMake** (version 4.2 or higher recommended)
 - **MSVC Compiler** (Visual Studio 2022 or newer)
 - **Git** (for cloning the repository)
-
-> **Tip:** You can use the "Developer Command Prompt for Visual Studio" to ensure MSVC is available in your terminal.
 
 #### Steps
 Follow these steps to clone and build the project:
@@ -70,14 +68,14 @@ cd ./raytrace_renderer
 cmake --preset default
 cmake --build build --config Release # or Debug if desired
 ```
-4. Build the project:
+4. Run the project:
 ```bash
 cd ./build/Release # or Debug
 explorer .
 ```
 
 ## Conclusion
-While there is still plenty of room for improvement—such as supporting objects beyond spheres or adding multi-threading—this project successfully achieved its goal of building a strong foundation in graphics programming and understanding the graphics pipeline.
+While there is still plenty of room for improvement, such as supporting objects beyond spheres or adding multi-threading, this project successfully achieved its goal of building a strong foundation in graphics programming and raytracing.
 
 The next steps are to:
 - Implement a rasterizer
@@ -85,6 +83,7 @@ The next steps are to:
 - Progress to DirectX 12
 
 <img width="1602" height="940" alt="conclusion" src="https://github.com/user-attachments/assets/449d5593-c30b-4308-8dec-dd6d1d695bd7" />
+
 
 
 
